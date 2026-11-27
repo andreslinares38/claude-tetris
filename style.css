@@ -173,7 +173,8 @@ kbd {
   align-items: center;
 }
 
-#overlay-title {
+#overlay-title,
+#pause-title {
   font-size: 28px;
   font-weight: 800;
   letter-spacing: 4px;
@@ -186,7 +187,8 @@ kbd {
   color: var(--accent);
 }
 
-#restart-btn {
+#restart-btn,
+.menu-btn {
   margin-top: 8px;
   background: var(--accent);
   color: var(--btn-text);
@@ -200,7 +202,8 @@ kbd {
   transition: background 0.15s;
 }
 
-#restart-btn:hover {
+#restart-btn:hover,
+.menu-btn:hover {
   background: var(--accent-hover);
 }
 
@@ -225,6 +228,49 @@ kbd {
   font: inherit;
   color: var(--text);
   cursor: pointer;
+}
+
+/* ---- Menú de pausa ---- */
+#pause-title {
+  color: var(--accent);
+}
+
+.menu-btn {
+  width: 200px;
+}
+
+#pause-controls {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 12px;
+  text-align: left;
+}
+
+#pause-controls[hidden] {
+  display: none;
+}
+
+.start-level {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 8px;
+  font-size: 14px;
+}
+
+.start-level select {
+  background: var(--kbd-bg);
+  color: var(--text);
+  border: 1px solid var(--kbd-border);
+  border-radius: 4px;
+  padding: 4px 8px;
+}
+
+.menu-hint {
+  font-size: 11px;
+  color: var(--muted);
 }
 
 /* ---- Switch de tema (esquina superior derecha, fuera del área de juego) ---- */
