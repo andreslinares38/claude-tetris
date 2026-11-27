@@ -44,6 +44,12 @@ const overlayTitle = document.getElementById('overlay-title');
 const overlayScore = document.getElementById('overlay-score');
 const restartBtn = document.getElementById('restart-btn');
 const themeToggle = document.getElementById('theme-toggle');
+const pauseMenu = document.getElementById('pause-menu');
+const resumeBtn = document.getElementById('resume-btn');
+const pauseRestartBtn = document.getElementById('pause-restart-btn');
+const controlsBtn = document.getElementById('controls-btn');
+const pauseControls = document.getElementById('pause-controls');
+const startLevelSelect = document.getElementById('start-level');
 
 let gridColor = '#22222e';
 
@@ -55,6 +61,10 @@ function applyTheme(light) {
 }
 
 let board, current, next, score, lines, level, paused, gameOver, lastTime, dropAccum, dropInterval, animId;
+
+let startLevel = 1;   // elegido en el menú de pausa; se aplica en la próxima partida
+let gameStartLevel;   // nivel inicial de la partida en curso
+const freshKeys = new Set(); // teclas pulsadas desde que se (re)anudó el juego
 
 function createBoard() {
   return Array.from({ length: ROWS }, () => new Array(COLS).fill(0));
@@ -120,7 +130,7 @@ function clearLines() {
   if (cleared) {
     lines += cleared;
     score += (LINE_SCORES[cleared] || 0) * level;
-    level = Math.floor(lines / 10) + 1;
+    level = Math.max(gameStartLevel, Math.floor(lines / 10) + 1);
     dropInterval = Math.max(100, 1000 - (level - 1) * 90);
     updateHUD();
   }
@@ -243,15 +253,29 @@ function endGame() {
 function togglePause() {
   if (gameOver) return;
   paused = !paused;
-  if (!paused) {
-    lastTime = performance.now();
-    loop(lastTime);
+  cancelAnimationFrame(animId);
+  if (paused) {
+    showControls(false);
+    pauseMenu.classList.remove('hidden');
   } else {
-    cancelAnimationFrame(animId);
-    overlayTitle.textContent = 'PAUSA';
-    overlayScore.textContent = '';
-    overlay.classList.remove('hidden');
+    closePauseMenu();
+    dropAccum = 0; // evita que la pieza salte al reanudar
+    lastTime = performance.now();
+    animId = requestAnimationFrame(loop);
   }
+}
+
+function closePauseMenu() {
+  pauseMenu.classList.add('hidden');
+  // Sin foco en el menú, Space no puede activar un botón durante la partida
+  if (pauseMenu.contains(document.activeElement)) document.activeElement.blur();
+  freshKeys.clear();
+}
+
+function showControls(show) {
+  pauseControls.hidden = !show;
+  controlsBtn.setAttribute('aria-expanded', show);
+  controlsBtn.textContent = show ? 'Ocultar controles' : 'Ver controles';
 }
 
 function loop(ts) {
@@ -276,23 +300,36 @@ function init() {
   board = createBoard();
   score = 0;
   lines = 0;
-  level = 1;
+  gameStartLevel = startLevel;
+  level = gameStartLevel;
   paused = false;
   gameOver = false;
-  dropInterval = 1000;
+  dropInterval = Math.max(100, 1000 - (level - 1) * 90);
   dropAccum = 0;
   lastTime = performance.now();
   next = randomPiece();
   spawn();
   updateHUD();
   overlay.classList.add('hidden');
+  closePauseMenu();
   cancelAnimationFrame(animId);
   animId = requestAnimationFrame(loop);
 }
 
 document.addEventListener('keydown', e => {
-  if (e.code === 'KeyP') { togglePause(); return; }
+  // No interceptar lo que se escribe en campos de texto
+  if (e.target.matches('input:not([type="checkbox"]), textarea')) return;
+  if (e.code === 'KeyP' || e.code === 'Escape') {
+    if (e.ctrlKey || e.metaKey || e.altKey) return; // respeta Ctrl/Cmd+P
+    e.preventDefault();
+    if (!e.repeat) togglePause();
+    return;
+  }
+  // Con el menú abierto no se procesa ninguna tecla de juego
   if (paused || gameOver) return;
+  // Una tecla mantenida desde antes de (re)anudar no actúa hasta soltarla
+  if (!e.repeat) freshKeys.add(e.code);
+  else if (!freshKeys.has(e.code)) { e.preventDefault(); return; }
   switch (e.code) {
     case 'ArrowLeft':
       if (!collide(current.shape, current.x - 1, current.y)) current.x--;
@@ -316,6 +353,14 @@ document.addEventListener('keydown', e => {
 });
 
 restartBtn.addEventListener('click', init);
+
+resumeBtn.addEventListener('click', togglePause);
+pauseRestartBtn.addEventListener('click', init);
+controlsBtn.addEventListener('click', () => showControls(pauseControls.hidden));
+startLevelSelect.addEventListener('change', () => {
+  startLevel = Number(startLevelSelect.value);
+});
+startLevelSelect.value = startLevel; // el navegador puede restaurar otro valor al recargar
 
 themeToggle.addEventListener('change', () => {
   applyTheme(themeToggle.checked);
