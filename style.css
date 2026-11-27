@@ -188,7 +188,8 @@ kbd {
 }
 
 #restart-btn,
-.menu-btn {
+.menu-btn,
+.btn {
   margin-top: 8px;
   background: var(--accent);
   color: var(--btn-text);
@@ -203,7 +204,8 @@ kbd {
 }
 
 #restart-btn:hover,
-.menu-btn:hover {
+.menu-btn:hover,
+.btn:hover {
   background: var(--accent-hover);
 }
 
@@ -271,6 +273,121 @@ kbd {
 .menu-hint {
   font-size: 11px;
   color: var(--muted);
+}
+
+/* ---- Pantalla de inicio y récords ---- */
+.records-title {
+  font-size: 22px;
+  font-weight: 800;
+  letter-spacing: 4px;
+  color: var(--accent);
+}
+
+.btn.btn-secondary {
+  background: transparent;
+  color: var(--muted);
+  border: 1px solid var(--board-border);
+  padding: 6px 16px;
+  font-size: 12px;
+}
+
+.btn.btn-secondary:hover {
+  background: transparent;
+  color: var(--accent);
+  border-color: var(--accent);
+}
+
+#clear-records-btn:hover {
+  color: var(--danger);
+  border-color: var(--danger);
+}
+
+.gameover-records {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+.gameover-records.hidden,
+.new-record.hidden,
+.record-form.hidden,
+.record-error.hidden {
+  display: none;
+}
+
+.new-record {
+  font-size: 18px;
+  font-weight: 800;
+  color: var(--accent);
+}
+
+.record-form {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.record-form .btn {
+  margin-top: 0;
+  padding: 8px 16px;
+}
+
+#record-name {
+  width: 160px;
+  padding: 7px 10px;
+  font: inherit;
+  font-size: 14px;
+  color: var(--text);
+  background: var(--board-bg);
+  border: 1px solid var(--board-border);
+  border-radius: 6px;
+  user-select: text;
+}
+
+.record-error {
+  font-size: 12px;
+  color: var(--danger);
+}
+
+.records table {
+  margin: 0 auto;
+  border-collapse: collapse;
+  font-size: 12px;
+}
+
+.records th,
+.records td {
+  padding: 4px 8px;
+  text-align: right;
+  white-space: nowrap;
+}
+
+.records th {
+  color: var(--label);
+  font-size: 10px;
+  letter-spacing: 1px;
+}
+
+.records th:nth-child(2),
+.records td:nth-child(2) {
+  text-align: left;
+}
+
+.records tr.highlight td {
+  background: var(--accent);
+  color: var(--btn-text);
+  font-weight: 700;
+}
+
+.records-empty,
+.records-stats {
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.records-stats {
+  margin-top: 8px;
 }
 
 /* ---- Switch de tema (esquina superior derecha, fuera del área de juego) ---- */

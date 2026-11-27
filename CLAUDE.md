@@ -10,5 +10,7 @@ Vanilla JS + Canvas Tetris. All logic is in `game.js`; no build step or dependen
 - Scoring: `LINE_SCORES` `[0,100,300,500,800]` × level, plus 2 per cell for hard drop and 1 per row for soft drop. Automatic gravity in `loop` gives no points on purpose, because it duplicates the move logic instead of calling `softDrop`. Don't "fix" that.
 - The README documents the constants (`COLS`, `ROWS`, `BLOCK`, `SKINS`, `LINE_SCORES`, `dropInterval`). Keep it in sync when they change.
 - Block rendering is per skin (`SKINS` in `game.js`; `drawBlock` dispatches to the active one). Each skin needs all 9 `colors`, must reset `globalAlpha`/`shadowBlur`, and keep the ghost (alpha 0.2) visible. `null` `boardBg`/`grid` (retro) means follow the light/dark theme.
+- The game does not start on load: `showStartScreen()` waits for "Jugar", so `board`/`current`/`next` are undefined until the first `init()`. The keydown handler ignores everything while `#start-screen` is visible or the name field is the target.
+- Records live in `localStorage` (`tetris.records` top 5, `tetris.stats` best combo / max lines). Keep every access inside try/catch and render player names with `textContent`, never `innerHTML`.
 - Comments are in Spanish. Some UI labels (SCORE, LINES, LEVEL, NEXT, CONTROLS, GAME OVER) are in English; new text should be in Spanish.
 - Use `/verify-tetris` to check changes in the browser.
