@@ -50,6 +50,7 @@ body {
   align-items: center;
   justify-content: center;
   min-height: 100vh;
+  padding-top: 56px; /* franja libre para el selector de skin y el switch de tema */
   user-select: none;
   transition: background 0.2s, color 0.2s;
 }
@@ -211,7 +212,7 @@ kbd {
 
 /* ---- Selector de skin (a la izquierda del switch de tema) ---- */
 .skin-picker {
-  position: fixed;
+  position: absolute;
   top: 16px;
   right: 136px;
   height: 24px;
@@ -392,7 +393,7 @@ kbd {
 
 /* ---- Switch de tema (esquina superior derecha, fuera del área de juego) ---- */
 .theme-switch {
-  position: fixed;
+  position: absolute;
   top: 16px;
   right: 16px;
   display: flex;
