@@ -17,6 +17,7 @@ Implementación del clásico **Tetris** en JavaScript vanilla, usando HTML5 Canv
     - [Opción 1: abrir el archivo directamente](#opción-1-abrir-el-archivo-directamente)
     - [Opción 2: servidor local (recomendado)](#opción-2-servidor-local-recomendado)
   - [Controles](#controles)
+  - [Récords](#récords)
   - [Cómo funciona](#cómo-funciona)
     - [1. `index.html`](#1-indexhtml)
     - [2. `style.css`](#2-stylecss)
@@ -42,6 +43,8 @@ Es una versión jugable del Tetris clásico con todas las mecánicas que esperar
 - **Sistema de puntuación** clásico de Tetris (100 / 300 / 500 / 800 multiplicado por nivel).
 - **Niveles** que aumentan cada 10 líneas y aceleran la caída.
 - **Pausa** y **Game Over** con opción de reinicio.
+- **Pantalla de inicio** con la tabla de récords y botón **Jugar** (la partida no arranca sola).
+- **Récords locales**: top 5 con nombre, puntos, líneas, nivel y fecha, más el mejor combo y el máximo de líneas.
 
 ---
 
@@ -88,6 +91,17 @@ Después abre `http://localhost:8000` en el navegador.
 
 ---
 
+## Récords
+
+Los récords se guardan en el `localStorage` del navegador, así que son propios de cada navegador y origen:
+
+- `tetris.records`: las 5 mejores puntuaciones como `{name, score, lines, level, date}`.
+- `tetris.stats`: las mejores marcas `{bestCombo, maxLines}`, actualizadas en cada Game Over. El **combo** cuenta las piezas consecutivas que al fijarse limpian líneas; no cambia la puntuación.
+
+Si al terminar la partida la puntuación entra en el top 5, aparece **¡Nuevo récord!** y un campo para escribir el nombre (máximo 12 caracteres; vacío se guarda como `Anónimo`). Pulsa **Guardar** o `Enter`; si reinicias sin guardar, la puntuación se descarta. Desde el Game Over, **Menú principal** vuelve a la pantalla de inicio. Allí, el botón **Borrar récords** elimina ambas claves tras pedir confirmación.
+
+---
+
 ## Cómo funciona
 
 El juego se compone de tres archivos que cooperan:
@@ -98,7 +112,8 @@ Define la estructura visual:
 
 - Un `<canvas id="board">` de **300 × 600** píxeles donde se renderiza el tablero.
 - Un panel lateral con `SCORE`, `LINES`, `LEVEL`, vista de la siguiente pieza y la lista de controles.
-- Un overlay para los estados **PAUSA** y **GAME OVER**.
+- Un overlay para los estados **PAUSA** y **GAME OVER** (este último con la tabla de récords).
+- Una pantalla de inicio (`#start-screen`) con los récords y los botones **Jugar** y **Borrar récords**.
 
 ### 2. `style.css`
 
@@ -121,6 +136,8 @@ Contiene toda la lógica del juego. A grandes rasgos:
 ### Flujo del juego
 
 ```
+showStartScreen()                   → tabla de récords; "Jugar" llama a startGame()
+        ↓
 init()
   ├─ createBoard()                  → matriz vacía
   ├─ next = randomPiece()
@@ -136,7 +153,7 @@ init()
    keydown → mover / rotar / soft-drop / hard-drop / pausa
 ```
 
-Cuando una pieza recién generada ya colisiona al aparecer (`spawn`), se dispara `endGame()` y se muestra el overlay de **Game Over**.
+Cuando una pieza recién generada ya colisiona al aparecer (`spawn`), se dispara `endGame()` y se muestra el overlay de **Game Over** con la tabla de récords.
 
 ---
 
@@ -146,6 +163,7 @@ Cuando una pieza recién generada ya colisiona al aparecer (`spawn`), se dispara
 - **CSS3** — _flexbox_, variables de color, `backdrop-filter` y `box-shadow`.
 - **JavaScript (ES6+) vanilla** — `const`/`let`, _arrow functions_, _spread operator_, `Array.from`, _template literals_…
 - **Canvas 2D API** — para todo el renderizado del juego.
+- **`localStorage`** — para persistir los récords.
 - **`requestAnimationFrame`** — para el bucle de juego sincronizado con el navegador.
 
 **Sin dependencias.** No hay `package.json`, ni bundler, ni transpilador.
@@ -158,7 +176,7 @@ Cuando una pieza recién generada ya colisiona al aparecer (`spawn`), se dispara
 03-tetris/
 ├── index.html      # Estructura del DOM y canvas
 ├── style.css       # Estilos del juego (dark theme)
-├── game.js         # Toda la lógica del Tetris (~300 líneas)
+├── game.js         # Toda la lógica del Tetris (~500 líneas)
 └── README.md
 ```
 
