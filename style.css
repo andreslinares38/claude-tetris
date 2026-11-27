@@ -204,6 +204,29 @@ kbd {
   background: var(--accent-hover);
 }
 
+/* ---- Selector de skin (a la izquierda del switch de tema) ---- */
+.skin-picker {
+  position: fixed;
+  top: 16px;
+  right: 136px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.skin-picker select {
+  background: var(--kbd-bg);
+  border: 1px solid var(--kbd-border);
+  border-radius: 6px;
+  padding: 2px 6px;
+  font: inherit;
+  color: var(--text);
+  cursor: pointer;
+}
+
 /* ---- Switch de tema (esquina superior derecha, fuera del área de juego) ---- */
 .theme-switch {
   position: fixed;
